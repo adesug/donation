@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Donation;
+use App\Models\Donation;
 
 class DonationController extends Controller
 {
@@ -23,8 +23,7 @@ class DonationController extends Controller
     {
         \DB::transaction(function() use($request) {
             $donation = Donation::create([
-                'transaction_id' => \Str::uuid(),
-                'donor_name' => $request->donor_name,
+                 'donor_name' => $request->donor_name,
                 'donor_email' => $request->donor_email,
                 'donation_type' => $request->donation_type,
                 'amount' => floatval($request->amount),
@@ -33,7 +32,7 @@ class DonationController extends Controller
 
             $payload = [
                 'transaction_details' => [
-                    'order_id'      => $donation->transaction_id,
+                    'order_id'      =>'SANDBOX-' . uniqid(),
                     'gross_amount'  => $donation->amount,
                 ],
                 'customer_details' => [

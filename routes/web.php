@@ -19,6 +19,7 @@ Route::get('/', function () {
 });
 
 Route::get('/donation','App\Http\Controllers\DonationController@index');
+Route::post('/donation','App\Http\Controllers\DonationController@store');
 
 Auth::routes();
 

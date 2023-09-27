@@ -31,8 +31,8 @@ return [
     ],
 
     'midtrans' => [
-        'serviceKey'    => env('MIDTRANS_SERVICEKEY'),
-        'clinetKey'     => env('MIDTRANS_CLIENTKEY'),
+        'serverKey'    => env('MIDTRANS_SERVERKEY'),
+        'clientKey'     => env('MIDTRANS_CLIENTKEY'),
         'isProduction'  => env('MIDTRANS_IS_PRODUCTION',false),
         'isSanitizes'   => env('MIDTRANS_IS_SANITIZED', true),
         'is3ds' => env('MIDTRANS_IS_3DS',true), 
