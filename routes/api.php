@@ -18,6 +18,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('/donation','App\Http\Controllers\DonationController@store');
+Route::post('/midtrans/notification','App\Http\Controllers\DonationController@notification');
+

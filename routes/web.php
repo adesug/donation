@@ -14,12 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+Route::get('/','App\Http\Controllers\DonationController@index');
 
-Route::get('/donation','App\Http\Controllers\DonationController@index');
-Route::post('/donation','App\Http\Controllers\DonationController@store');
+Route::get('/donation','App\Http\Controllers\DonationController@create');
 
 Auth::routes();
 

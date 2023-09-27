@@ -14,8 +14,13 @@ class DonationController extends Controller
         \Midtrans\Config::$isSanitized = config('services.midtrans.isSanitized');
         \Midtrans\Config::$is3ds = config('services.midtrans.is3ds');
     }
-
     public function index()
+    {
+        $donations = Donation::orderBy('id','DESC')->paginate(8);
+        return view('welcome', compact('donations'));
+    }
+
+    public function create()
     {
         return view('donation');
     }
@@ -23,6 +28,7 @@ class DonationController extends Controller
     {
         \DB::transaction(function() use($request) {
             $donation = Donation::create([
+                'donation_code' => 'SANDBOX-' . uniqid(),
                  'donor_name' => $request->donor_name,
                 'donor_email' => $request->donor_email,
                 'donation_type' => $request->donation_type,
@@ -32,7 +38,7 @@ class DonationController extends Controller
 
             $payload = [
                 'transaction_details' => [
-                    'order_id'      =>'SANDBOX-' . uniqid(),
+                    'order_id'      => $donation->donation_code,
                     'gross_amount'  => $donation->amount,
                 ],
                 'customer_details' => [
@@ -58,6 +64,54 @@ class DonationController extends Controller
         });
 
         return response()->json($this->response);
+    }
+    public function notification(Request $request)
+    {
+        $notif = new \Midtrans\Notification();
+
+        \DB::transaction(function() use($notif) {
+
+          $transaction = $notif->transaction_status;
+          $type = $notif->payment_type;
+          $orderId = $notif->order_id;
+          $fraud = $notif->fraud_status;
+          $donation = Donation::where('donation_code', $orderId)->first();
+
+          if ($transaction == 'capture') {
+            if ($type == 'credit_card') {
+
+              if($fraud == 'challenge') {
+                $donation->setStatusPending();
+              } else {
+                $donation->setStatusSuccess();
+              }
+
+            }
+          } elseif ($transaction == 'settlement') {
+
+            $donation->setStatusSuccess();
+
+          } elseif($transaction == 'pending'){
+
+              $donation->setStatusPending();
+
+          } elseif ($transaction == 'deny') {
+
+              $donation->setStatusFailed();
+
+          } elseif ($transaction == 'expire') {
+
+              $donation->setStatusExpired();
+
+          } elseif ($transaction == 'cancel') {
+
+              $donation->setStatusFailed();
+
+          }
+
+        });
+
+        return;
     }
 
 }

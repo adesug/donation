@@ -34,7 +34,7 @@
 
     <div class="jumbotron">
         <div class="container">
-            <h1 class="display-4">IDonation</h1>
+            <h1 class="display-4">IDonation Adesug</h1>
             <p class="lead">Platform donasi untuk saudara kita yang membutuhkan.</p>
         </div>
     </div>
@@ -106,7 +106,7 @@
         $("#donation_form").submit(function(event) {
             event.preventDefault();
 
-            $.post("/donation", {
+            $.post("/api/donation", {
                 _method: 'POST',
                 _token: '{{ csrf_token() }}',
                 donor_name: $('input#donor_name').val(),
